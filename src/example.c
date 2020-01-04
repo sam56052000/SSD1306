@@ -26,6 +26,7 @@
 #include <signal.h>
 
 #include "ssd1306.h"
+#include "OLED_Print.h"
 
 
 #define NI_MAXHOST 1025 
@@ -102,13 +103,13 @@ void sig_handler(int signo)
  * 
  */
 int main(int argc, char** argv) {
-    time_t mytime;
-    struct tm *tm;
-    uint8_t time_buffer[80];
-    uint8_t text_buffer[100];    
-    struct ifaddrs *ifaddr, *ifa;
-    int family, s, n, row;
-    char host[NI_MAXHOST];
+    // time_t mytime;
+    // struct tm *tm;
+    // uint8_t time_buffer[80];
+    // uint8_t text_buffer[100];    
+    // struct ifaddrs *ifaddr, *ifa;
+    // int family, s, n, row;
+    // char host[NI_MAXHOST];
 
     
     // Print pid, so that we can send signals from other shells
@@ -124,96 +125,107 @@ int main(int argc, char** argv) {
     }
 
     /* Init I2C bus  */
-    bus = i2c_init((char*)&"/dev/i2c-0", 0x3c); //dev, slavei2caddr
-    /* */
-    ssd1306Init(SSD1306_SWITCHCAPVCC);
+    // bus = i2c_init((char*)&"/dev/i2c-0", 0x3c); //dev, slavei2caddr
+    // /* */
+    // ssd1306Init(SSD1306_SWITCHCAPVCC);
+
+    SSD1306_Init();
+
+    Print_ASCII(16, 0, 'W');
+    Print_ASCII(30, 0, 'E');
+    Print_ASCII(44, 0, 'L');
+    Print_ASCII(58, 0, 'C');
+    Print_ASCII(72, 0, 'O');
+    Print_ASCII(86, 0, 'M');
+    Print_ASCII(100, 0, 'E');
 
     while (done == 0) {
-        row = 2;
-        _font = (FONT_INFO*)&ubuntuMono_8ptFontInfo;
-        /* Display time */
-        mytime = time(NULL);
-        tm = localtime (&mytime);
-        ssd1306ClearScreen(LAYER0 | LAYER1) ;
-        strftime(time_buffer, 80,"  %H:%M:%S %x", tm);
-        ssd1306DrawString(0,  row * 8, time_buffer, 1, WHITE, LAYER0);
-        row++;
+        // row = 2;
+        // _font = (FONT_INFO*)&ubuntuMono_8ptFontInfo;
+        // /* Display time */
+        // mytime = time(NULL);
+        // tm = localtime (&mytime);
+        // ssd1306ClearScreen(LAYER0 | LAYER1) ;
+        // strftime(time_buffer, 80,"  %H:%M:%S %x", tm);
+        // ssd1306DrawString(0,  row * 8, time_buffer, 1, WHITE, LAYER0);
+        // row++;
 
-        /* Display IP */
-        /* Get network information */
-        if (getifaddrs(&ifaddr) == -1) 
-        {
-            perror("getifaddrs");
-            exit(EXIT_FAILURE);
-        }
-        /* Walk through linked list, maintaining head pointer so we
-          can free list later */
-        for (ifa = ifaddr, n = 0; ifa != NULL; ifa = ifa->ifa_next, n++) {
-            if (ifa->ifa_addr == NULL)
-                continue;
+        // /* Display IP */
+        // /* Get network information */
+        // if (getifaddrs(&ifaddr) == -1) 
+        // {
+        //     perror("getifaddrs");
+        //     exit(EXIT_FAILURE);
+        // }
+        // /* Walk through linked list, maintaining head pointer so we
+        //   can free list later */
+        // for (ifa = ifaddr, n = 0; ifa != NULL; ifa = ifa->ifa_next, n++) {
+        //     if (ifa->ifa_addr == NULL)
+        //         continue;
             
-            family = ifa->ifa_addr->sa_family;
-            /* Display interface name and family (including symbolic
-                form of the latter for the common families) */
-            if ((strncmp ("eth", ifa->ifa_name, 3 ) == 0) && family == AF_INET) {
-                s = getnameinfo(ifa->ifa_addr,
-                       (ifa->ifa_addr->sa_family == AF_INET) ? sizeof(struct sockaddr_in) :
-                                             sizeof(struct sockaddr_in6),
-                       host, NI_MAXHOST,
-                       NULL, 0, NI_NUMERICHOST);
-                if (s != 0) {
-                   printf("getnameinfo() failed: %s\n", gai_strerror(s));
-                   exit(EXIT_FAILURE);
-                }
-                printf("%-8s <%s>\n", ifa->ifa_name, host);
-                snprintf ( text_buffer, sizeof(text_buffer), "%s: %s",ifa->ifa_name, host );
-                ssd1306DrawString(0,  row * 8, text_buffer, 1, WHITE, LAYER0); 
-                row++;
-            } 
-            if ((strncmp ("wlan", ifa->ifa_name, 4 ) == 0) && family == AF_INET) {
-                s = getnameinfo(ifa->ifa_addr,
-                       (ifa->ifa_addr->sa_family == AF_INET) ? sizeof(struct sockaddr_in) :
-                                             sizeof(struct sockaddr_in6),
-                       host, NI_MAXHOST,
-                       NULL, 0, NI_NUMERICHOST);
-                if (s != 0) {
-                   printf("getnameinfo() failed: %s\n", gai_strerror(s));
-                   exit(EXIT_FAILURE);
-                }
-                printf("%-8s <%s>\n", ifa->ifa_name, host);
-                snprintf ( text_buffer, sizeof(text_buffer), "%s: %s",ifa->ifa_name, host );
-                ssd1306DrawString(0,  row * 8, text_buffer, 1, WHITE, LAYER0); 
-                row++;
-            } 
-        }
-        freeifaddrs(ifaddr);
+        //     family = ifa->ifa_addr->sa_family;
+        //     /* Display interface name and family (including symbolic
+        //         form of the latter for the common families) */
+        //     if ((strncmp ("eth", ifa->ifa_name, 3 ) == 0) && family == AF_INET) {
+        //         s = getnameinfo(ifa->ifa_addr,
+        //                (ifa->ifa_addr->sa_family == AF_INET) ? sizeof(struct sockaddr_in) :
+        //                                      sizeof(struct sockaddr_in6),
+        //                host, NI_MAXHOST,
+        //                NULL, 0, NI_NUMERICHOST);
+        //         if (s != 0) {
+        //            printf("getnameinfo() failed: %s\n", gai_strerror(s));
+        //            exit(EXIT_FAILURE);
+        //         }
+        //         printf("%-8s <%s>\n", ifa->ifa_name, host);
+        //         snprintf ( text_buffer, sizeof(text_buffer), "%s: %s",ifa->ifa_name, host );
+        //         ssd1306DrawString(0,  row * 8, text_buffer, 1, WHITE, LAYER0); 
+        //         row++;
+        //     } 
+        //     if ((strncmp ("wlan", ifa->ifa_name, 4 ) == 0) && family == AF_INET) {
+        //         s = getnameinfo(ifa->ifa_addr,
+        //                (ifa->ifa_addr->sa_family == AF_INET) ? sizeof(struct sockaddr_in) :
+        //                                      sizeof(struct sockaddr_in6),
+        //                host, NI_MAXHOST,
+        //                NULL, 0, NI_NUMERICHOST);
+        //         if (s != 0) {
+        //            printf("getnameinfo() failed: %s\n", gai_strerror(s));
+        //            exit(EXIT_FAILURE);
+        //         }
+        //         printf("%-8s <%s>\n", ifa->ifa_name, host);
+        //         snprintf ( text_buffer, sizeof(text_buffer), "%s: %s",ifa->ifa_name, host );
+        //         ssd1306DrawString(0,  row * 8, text_buffer, 1, WHITE, LAYER0); 
+        //         row++;
+        //     } 
+        // }
+        // freeifaddrs(ifaddr);
         
-        /* CPU usage
-         * 
-         */
-        float c = GetCPULoad() ;
-        snprintf ( text_buffer, sizeof(text_buffer), "CPU loadavg: %0.2f", c );
-        printf("%s\n", text_buffer);
-        ssd1306DrawString(0,  row * 8, text_buffer, 1, WHITE, LAYER0); 
-        row++;
+        // /* CPU usage
+        //  * 
+        //  */
+        // float c = GetCPULoad() ;
+        // snprintf ( text_buffer, sizeof(text_buffer), "CPU loadavg: %0.2f", c );
+        // printf("%s\n", text_buffer);
+        // ssd1306DrawString(0,  row * 8, text_buffer, 1, WHITE, LAYER0); 
+        // row++;
         
-        /* Memory usage */
-        float m = GetMemUsage();
-        snprintf ( text_buffer, sizeof(text_buffer), "Mem used: %3.0f%%", m*100 );
-        printf("%s\n", text_buffer);
-        ssd1306DrawString(4,  2, text_buffer, 1, WHITE, LAYER0); 
-        ssd1306DrawRect(0, 0, 127, 13, INVERSE, LAYER0);
-        ssd1306FillRect(2, 2, (int)(123 * m), 9, INVERSE, LAYER0);
+        // /* Memory usage */
+        // float m = GetMemUsage();
+        // snprintf ( text_buffer, sizeof(text_buffer), "Mem used: %3.0f%%", m*100 );
+        // printf("%s\n", text_buffer);
+        // ssd1306DrawString(4,  2, text_buffer, 1, WHITE, LAYER0); 
+        // ssd1306DrawRect(0, 0, 127, 13, INVERSE, LAYER0);
+        // ssd1306FillRect(2, 2, (int)(123 * m), 9, INVERSE, LAYER0);
         
-        /* CPU temperature  */
-        int t = GetCPUTemp() ;
-        snprintf ( text_buffer, sizeof(text_buffer), "CPU temp: %3d C", t );
-        printf("%s\n", text_buffer);
-        ssd1306DrawString(0,  row * 8, text_buffer, 1, WHITE, LAYER0); 
-        row++;
+        // /* CPU temperature  */
+        // int t = GetCPUTemp() ;
+        // snprintf ( text_buffer, sizeof(text_buffer), "CPU temp: %3d C", t );
+        // printf("%s\n", text_buffer);
+        // ssd1306DrawString(0,  row * 8, text_buffer, 1, WHITE, LAYER0); 
+        // row++;
 
         /* Refresh screen */
-        ssd1306Refresh();
+        // ssd1306Refresh();
+        SSD1306_Update();
         SSD1306MSDELAY(1000);
     }
 

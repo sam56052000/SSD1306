@@ -403,7 +403,7 @@ void  ssd1306DrawString(int16_t x, int16_t y, int8_t *text, uint8_t size,
 {
     static uint16_t l, pos;
     pos =  0;
-    for (l = 0; l < strlen(text); l++)
+    for (l = 0; l < strlen((char *)text); l++)
     {
         pos = pos + ssd1306DrawChar(x + (pos * size + 1), y, text[l], size, color, layer);
     }
