@@ -346,7 +346,7 @@ static const uint8_t Symbol_0x3A[OLED_PRINT_ASCII_HIGHT/8][OLED_PRINT_ASCII_WIDT
 {0x00,0x00,0x00,0x00,0x81,0xC3,0xC3,0x81,0x00,0x00,0x00,0x00},
 {0x00,0x00,0x00,0x00,0x01,0x03,0x03,0x01,0x00,0x00,0x00,0x00}};
 
-int i2c_bus;
+extern int bus;
 
 uint8_t *Get_ASCII_Print_Pixel(char Data);
 
@@ -359,6 +359,7 @@ void Print_jhan(uint8_t x, uint8_t y);
 void Print_hao(uint8_t x, uint8_t y);
 
 void SSD1306_Init(void);
+void SSD1306_Close(void);
 void SSD1306_Clear(void);
 void SSD1306_Update(void);
 

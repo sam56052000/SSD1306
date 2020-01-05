@@ -163,9 +163,16 @@ void Print_hao(uint8_t x, uint8_t y)
 
 void SSD1306_Init(void)
 {
-	i2c_bus = i2c_init((char*)&"/dev/i2c-0", 0x3c);
+	bus = i2c_init((char*)&"/dev/i2c-0", 0x3c);
 
     ssd1306Init(SSD1306_SWITCHCAPVCC);
+}
+
+void SSD1306_Close(void)
+{
+	ssd1306ClearScreen(LAYER0 | LAYER1) ;
+    ssd1306Refresh();
+    close(bus);
 }
 
 void SSD1306_Clear(void)
