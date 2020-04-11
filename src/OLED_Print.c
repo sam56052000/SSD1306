@@ -24,9 +24,15 @@ uint8_t *Get_ASCII_Print_Pixel(char Data)
 			}
 			break;
 
+			case ' ':
+			{
+				return (uint8_t *)Symbol_0x20;
+			}
+			break;
+
 			default:
 			{
-				return (uint8_t *)0x0;
+				return (uint8_t *)Symbol_0x20;
 			}
 			break;
 		}
@@ -152,6 +158,24 @@ void Print_hao(uint8_t x, uint8_t y)
 		for(j = 0; j < 24; j++)
 		{
 			uint8_t pixel = ((Text_hao[i/8][j])>>(i%8)) & 0x1;
+
+			for(k = 0; k < 2; k++)
+			{
+				OLED_Print_Function(x + j, y + i*2 + k, pixel);
+			}
+		}
+	}	
+}
+
+void TextClear(uint8_t x, uint8_t y)
+{
+	uint8_t i, j, k;
+
+	for(i = 0; i < 24; i++)
+	{
+		for(j = 0; j < 24; j++)
+		{
+			uint8_t pixel = ((Text_Clear[i/8][j])>>(i%8)) & 0x1;
 
 			for(k = 0; k < 2; k++)
 			{
